@@ -1,2 +1,1 @@
-# HtmlGrapheasKamva
-The repository is only for code distributing and issue tracking.
+HtmlGrapheasKamva is a drawing library for HtmlGrapheas.
