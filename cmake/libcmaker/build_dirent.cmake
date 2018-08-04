@@ -21,56 +21,54 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-include(cmr_print_message)
+include(cmr_print_status)
 
 #-----------------------------------------------------------------------
-# Build, install and find FontConfig library
+# Build, install and find Dirent library
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# Set vars for LibCMaker_FontConfig.
+# Set vars for LibCMaker_Dirent
 #-----------------------------------------------------------------------
 
-set(LIBCMAKER_FONTCONFIG_SRC_DIR
-  "${EXTERNAL_SRC_DIR}/LibCMaker_FontConfig")
-# To use our FindFontConfig.cmake
-list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_FONTCONFIG_SRC_DIR}/cmake")
+set(LIBCMAKER_DIRENT_SRC_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_Dirent"
+)
+# To use our FindDirent.cmake.
+list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_DIRENT_SRC_DIR}/cmake")
 
-set(FONTCONFIG_lib_VERSION "2.13.0")
+set(DIRENT_lib_VERSION    "1.23.1")
+set(DIRENT_DOWNLOAD_DIR   "${EXTERNAL_DOWNLOAD_DIR}")
+set(DIRENT_UNPACKED_DIR   "${EXTERNAL_UNPACKED_DIR}")
+set(DIRENT_BUILD_DIR      "${EXTERNAL_BIN_DIR}/build_dirent")
 
-set(FONTCONFIG_DOWNLOAD_DIR "${EXTERNAL_DOWNLOAD_DIR}")
-set(FONTCONFIG_UNPACKED_SRC_DIR "${EXTERNAL_UNPACKED_SRC_DIR}")
-set(FONTCONFIG_BUILD_DIR "${EXTERNAL_BIN_DIR}/build_fontconfig")
-
-set(COPY_FONTCONFIG_CMAKE_BUILD_SCRIPTS ON)
+set(COPY_DIRENT_CMAKE_BUILD_SCRIPTS ON)
 
 # Library specific vars and options.
-set(FONTCONFIG_DIR "${EXTERNAL_INSTALL_DIR}")
-set(ENV{FONTCONFIG_DIR} "${FONTCONFIG_DIR}")
 
 
 #-----------------------------------------------------------------------
-# Build and install the FontConfig.
+# Build and install the Dirent
 #-----------------------------------------------------------------------
 
 # Try to find already installed lib.
-find_package(FontConfig QUIET)
+find_package(Dirent QUIET)
 
-if(NOT FONTCONFIG_FOUND)
-  cmr_print_message(
-    "FontConfig is not installed, build and install it.")
+if(NOT DIRENT_FOUND)
+  cmr_print_status(
+    "Dirent is not installed, build and install it.")
 
-  include(${EXTERNAL_SRC_DIR}/LibCMaker_FontConfig/lib_cmaker_fontconfig.cmake)
-  lib_cmaker_fontconfig(
-    VERSION ${FONTCONFIG_lib_VERSION}
-    DOWNLOAD_DIR ${FONTCONFIG_DOWNLOAD_DIR}
-    UNPACKED_SRC_DIR ${FONTCONFIG_UNPACKED_SRC_DIR}
-    BUILD_DIR ${FONTCONFIG_BUILD_DIR}
+  include(${LIBCMAKER_DIRENT_SRC_DIR}/lib_cmaker_dirent.cmake)
+  lib_cmaker_dirent(
+    VERSION       ${DIRENT_lib_VERSION}
+    DOWNLOAD_DIR  ${DIRENT_DOWNLOAD_DIR}
+    UNPACKED_DIR  ${DIRENT_UNPACKED_DIR}
+    BUILD_DIR     ${DIRENT_BUILD_DIR}
   )
   
-  find_package(FontConfig REQUIRED)
+  find_package(Dirent REQUIRED)
   
 else()
-  cmr_print_message(
-    "FontConfig is installed, skip building and installing it.")
+  cmr_print_status(
+    "Dirent is installed, skip building and installing it.")
 endif()

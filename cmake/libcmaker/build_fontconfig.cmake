@@ -21,67 +21,65 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-include(cmr_print_message)
+include(cmr_print_status)
 
 #-----------------------------------------------------------------------
-# Build, install and find AGG library
+# Build, install and find FontConfig library
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# Set vars for LibCMaker_AGG.
+# Set vars for LibCMaker_FontConfig
 #-----------------------------------------------------------------------
 
-set(AGG_lib_VERSION "2.4.128")
+# Used in 'cmr_build_rules_fontconfig.cmake'.
+set(LIBCMAKER_DIRENT_SRC_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_Dirent"
+)
+set(LIBCMAKER_EXPAT_SRC_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_Expat"
+)
+set(LIBCMAKER_FREETYPE_SRC_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_FreeType"
+)
 
-set(AGG_DOWNLOAD_DIR "${EXTERNAL_DOWNLOAD_DIR}")
-set(AGG_UNPACKED_SRC_DIR "${EXTERNAL_UNPACKED_SRC_DIR}")
-set(AGG_BUILD_DIR "${EXTERNAL_BIN_DIR}/build_agg")
+set(LIBCMAKER_FONTCONFIG_SRC_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_FontConfig"
+)
+# To use our FindFontConfig.cmake.
+list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_FONTCONFIG_SRC_DIR}/cmake")
 
-set(NOT_ADD_AGG_PLATFORM ON)
-set(SKIP_BUILD_AGG_EXAMPLES ON)
-set(SKIP_BUILD_AGG_MYAPP ON)
+set(FONTCONFIG_lib_VERSION    "2.13.0")
+set(FONTCONFIG_DOWNLOAD_DIR   "${EXTERNAL_DOWNLOAD_DIR}")
+set(FONTCONFIG_UNPACKED_DIR   "${EXTERNAL_UNPACKED_DIR}")
+set(FONTCONFIG_BUILD_DIR      "${EXTERNAL_BIN_DIR}/build_fontconfig")
+
+set(COPY_FONTCONFIG_CMAKE_BUILD_SCRIPTS ON)
 
 # Library specific vars and options.
-set(AGG_DIR "${EXTERNAL_INSTALL_DIR}")
-set(ENV{AGG_DIR} "${AGG_DIR}")
-set(AGG_DIR_BIN "${AGG_DIR}/bin")
-
-option(agg_USE_GPC "Use Gpc Boolean library" OFF)
-option(agg_USE_FREETYPE "Use Freetype library" OFF)
-option(agg_USE_EXPAT "Use Expat library" OFF)
-option(agg_USE_SDL_PLATFORM "Use SDL as platform" OFF)
-option(agg_USE_PACK "Package Agg" OFF)
-option(agg_USE_AGG2D "Agg 2D graphical context" OFF)
-option(agg_USE_DEBUG "For debug version" OFF)
-option(agg_USE_AGG2D_FREETYPE "Agg 2D graphical context uses freetype" OFF)    
-
-# TODO: set ENV{FREETYPE_DIR} for AGG if agg_USE_FREETYPE==ON
 
 
 #-----------------------------------------------------------------------
-# Build and install the AGG.
+# Build and install the FontConfig
 #-----------------------------------------------------------------------
 
 # Try to find already installed lib.
-find_package(Agg CONFIG QUIET)
+find_package(FontConfig QUIET)
 
-if(NOT Agg_FOUND)
-  cmr_print_message(
-    "AGG is not installed, build and install it.")
+if(NOT FONTCONFIG_FOUND)
+  cmr_print_status(
+    "FontConfig is not installed, build and install it.")
 
-  include(${EXTERNAL_SRC_DIR}/LibCMaker_AGG/lib_cmaker_agg.cmake)
-  lib_cmaker_agg(
-    VERSION ${AGG_lib_VERSION}
-    DOWNLOAD_DIR ${AGG_DOWNLOAD_DIR}
-    UNPACKED_SRC_DIR ${AGG_UNPACKED_SRC_DIR}
-    BUILD_DIR ${AGG_BUILD_DIR}
+  include(${LIBCMAKER_FONTCONFIG_SRC_DIR}/lib_cmaker_fontconfig.cmake)
+  lib_cmaker_fontconfig(
+    VERSION       ${FONTCONFIG_lib_VERSION}
+    DOWNLOAD_DIR  ${FONTCONFIG_DOWNLOAD_DIR}
+    UNPACKED_DIR  ${FONTCONFIG_UNPACKED_DIR}
+    BUILD_DIR     ${FONTCONFIG_BUILD_DIR}
   )
-
-  find_package(Agg REQUIRED CONFIG)
-
+  
+  find_package(FontConfig REQUIRED)
+  
 else()
-  cmr_print_message(
-    "AGG is installed, skip building and installing it.")
+  cmr_print_status(
+    "FontConfig is installed, skip building and installing it.")
 endif()
-
-#include(${AGG_USE_FILE})

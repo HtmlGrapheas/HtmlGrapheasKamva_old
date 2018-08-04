@@ -21,57 +21,72 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-include(cmr_print_message)
+include(cmr_print_status)
 
 #-----------------------------------------------------------------------
-# Build, install and find STLCache library
+# Build, install and find AGG library
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# Set vars for LibCMaker_STLCache.
+# Set vars to LibCMaker_AGG
 #-----------------------------------------------------------------------
 
-# Needed for lib_cmaker_fontconfig() to build FontConfig with STLCache.
-set(LIBCMAKER_STLCACHE_SRC_DIR
-  "${EXTERNAL_SRC_DIR}/LibCMaker_STLCache")
-# To use our FindSTLCache.cmake
-list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_STLCACHE_SRC_DIR}/cmake")
+set(LIBCMAKER_AGG_SRC_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_AGG"
+)
+# To use our FindAgg.cmake.
+list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_AGG_SRC_DIR}/cmake")
 
-set(STLCACHE_lib_VERSION "0.2.20180405")
+set(AGG_lib_VERSION   "2.4.128")
+set(AGG_DOWNLOAD_DIR  "${EXTERNAL_DOWNLOAD_DIR}")
+set(AGG_UNPACKED_DIR  "${EXTERNAL_UNPACKED_DIR}")
+set(AGG_BUILD_DIR     "${EXTERNAL_BIN_DIR}/build_agg")
 
-set(STLCACHE_DOWNLOAD_DIR "${EXTERNAL_DOWNLOAD_DIR}")
-set(STLCACHE_UNPACKED_SRC_DIR "${EXTERNAL_UNPACKED_SRC_DIR}")
-set(STLCACHE_BUILD_DIR "${EXTERNAL_BIN_DIR}/build_stlcache")
+set(AGG_DIR "${EXTERNAL_INSTALL_DIR}")
+set(ENV{AGG_DIR} "${AGG_DIR}")
+set(AGG_DIR_BIN "${AGG_DIR}/bin")
 
-set(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS ON)
+set(NOT_ADD_AGG_PLATFORM ON)
+set(SKIP_BUILD_AGG_EXAMPLES ON)
+set(SKIP_BUILD_AGG_MYAPP ON)
 
 # Library specific vars and options.
-set(STLCACHE_DIR "${EXTERNAL_INSTALL_DIR}")
-set(ENV{STLCACHE_DIR} "${STLCACHE_DIR}")
+option(agg_USE_GPC "Use Gpc Boolean library" OFF)
+option(agg_USE_FREETYPE "Use Freetype library" OFF)
+option(agg_USE_EXPAT "Use Expat library" OFF)
+option(agg_USE_SDL_PLATFORM "Use SDL as platform" OFF)
+option(agg_USE_PACK "Package Agg" OFF)
+option(agg_USE_AGG2D "Agg 2D graphical context" OFF)
+option(agg_USE_DEBUG "For debug version" OFF)
+option(agg_USE_AGG2D_FREETYPE "Agg 2D graphical context uses freetype" OFF)    
+
+# TODO: set ENV{FREETYPE_DIR} to AGG if agg_USE_FREETYPE==ON
 
 
 #-----------------------------------------------------------------------
-# Build and install the STLCache.
+# Build and install the AGG
 #-----------------------------------------------------------------------
 
 # Try to find already installed lib.
-find_package(STLCache QUIET)
+find_package(Agg CONFIG QUIET)
 
-if(NOT STLCACHE_FOUND)
-  cmr_print_message(
-    "STLCache is not installed, build and install it.")
+if(NOT Agg_FOUND)
+  cmr_print_status(
+    "AGG is not installed, build and install it.")
 
-  include(${EXTERNAL_SRC_DIR}/LibCMaker_STLCache/lib_cmaker_stlcache.cmake)
-  lib_cmaker_stlcache(
-    VERSION ${STLCACHE_lib_VERSION}
-    DOWNLOAD_DIR ${STLCACHE_DOWNLOAD_DIR}
-    UNPACKED_SRC_DIR ${STLCACHE_UNPACKED_SRC_DIR}
-    BUILD_DIR ${STLCACHE_BUILD_DIR}
+  include(${LIBCMAKER_AGG_SRC_DIR}/lib_cmaker_agg.cmake)
+  lib_cmaker_agg(
+    VERSION       ${AGG_lib_VERSION}
+    DOWNLOAD_DIR  ${AGG_DOWNLOAD_DIR}
+    UNPACKED_DIR  ${AGG_UNPACKED_DIR}
+    BUILD_DIR     ${AGG_BUILD_DIR}
   )
-  
-  find_package(STLCache REQUIRED)
-  
+
+  find_package(Agg REQUIRED CONFIG)
+
 else()
-  cmr_print_message(
-    "STLCache is installed, skip building and installing it.")
+  cmr_print_status(
+    "AGG is installed, skip building and installing it.")
 endif()
+
+#include(${AGG_USE_FILE})

@@ -21,32 +21,28 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-include(cmr_print_message)
+include(cmr_print_status)
 
 #-----------------------------------------------------------------------
 # Build, install and find Expat library
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# Set vars for LibCMaker_Expat.
+# Set vars for LibCMaker_Expat
 #-----------------------------------------------------------------------
 
-# Needed for lib_cmaker_fontconfig() to build FontConfig with Expat.
 set(LIBCMAKER_EXPAT_SRC_DIR
-  "${EXTERNAL_SRC_DIR}/LibCMaker_Expat")
-# To use our FindEXPAT.cmake
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_Expat"
+)
+# To use our FindEXPAT.cmake.
 list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_EXPAT_SRC_DIR}/cmake")
 
-set(EXPAT_lib_VERSION "2.2.5")
-
-set(EXPAT_DOWNLOAD_DIR "${EXTERNAL_DOWNLOAD_DIR}")
-set(EXPAT_UNPACKED_SRC_DIR "${EXTERNAL_UNPACKED_SRC_DIR}")
-set(EXPAT_BUILD_DIR "${EXTERNAL_BIN_DIR}/build_expat")
+set(EXPAT_lib_VERSION   "2.2.5")
+set(EXPAT_DOWNLOAD_DIR  "${EXTERNAL_DOWNLOAD_DIR}")
+set(EXPAT_UNPACKED_DIR  "${EXTERNAL_UNPACKED_DIR}")
+set(EXPAT_BUILD_DIR     "${EXTERNAL_BIN_DIR}/build_expat")
 
 # Library specific vars and options.
-set(EXPAT_DIR "${EXTERNAL_INSTALL_DIR}")
-set(ENV{EXPAT_DIR} "${EXPAT_DIR}")
-
 option(BUILD_tools "build the xmlwf tool for expat library" OFF)
 option(BUILD_examples "build the examples for expat library" OFF)
 option(BUILD_tests "build the tests for expat library" OFF)
@@ -57,7 +53,7 @@ option(USE_libbsd "utilize libbsd (for arc4random_buf)" OFF)
 # Option INSTALL is set in lib_cmaker_expat() by NOT SKIP_INSTALL_ALL.
 #option(INSTALL "install expat files in cmake install target" ON)
 
-# configuration options
+# Configuration options.
 set(XML_CONTEXT_BYTES 1024 CACHE STRING
   "Define to specify how much context to retain around the current parse point")
 option(XML_DTD
@@ -70,27 +66,27 @@ endif()
 
 
 #-----------------------------------------------------------------------
-# Build and install the Expat.
+# Build and install the Expat
 #-----------------------------------------------------------------------
 
 # Try to find already installed lib.
 find_package(EXPAT QUIET)
 
 if(NOT EXPAT_FOUND)
-  cmr_print_message(
+  cmr_print_status(
     "Expat is not installed, build and install it.")
 
-  include(${EXTERNAL_SRC_DIR}/LibCMaker_Expat/lib_cmaker_expat.cmake)
+  include(${LIBCMAKER_EXPAT_SRC_DIR}/lib_cmaker_expat.cmake)
   lib_cmaker_expat(
-    VERSION ${EXPAT_lib_VERSION}
-    DOWNLOAD_DIR ${EXPAT_DOWNLOAD_DIR}
-    UNPACKED_SRC_DIR ${EXPAT_UNPACKED_SRC_DIR}
-    BUILD_DIR ${EXPAT_BUILD_DIR}
+    VERSION       ${EXPAT_lib_VERSION}
+    DOWNLOAD_DIR  ${EXPAT_DOWNLOAD_DIR}
+    UNPACKED_DIR  ${EXPAT_UNPACKED_DIR}
+    BUILD_DIR     ${EXPAT_BUILD_DIR}
   )
   
   find_package(EXPAT REQUIRED)
   
 else()
-  cmr_print_message(
+  cmr_print_status(
     "Expat is installed, skip building and installing it.")
 endif()

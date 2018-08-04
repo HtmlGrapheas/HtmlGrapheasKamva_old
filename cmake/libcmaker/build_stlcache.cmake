@@ -21,57 +21,54 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 # ****************************************************************************
 
-include(cmr_print_message)
+include(cmr_print_status)
 
 #-----------------------------------------------------------------------
-# Build, install and find Dirent library
+# Build, install and find STLCache library
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# Set vars for LibCMaker_Dirent.
+# Set vars for LibCMaker_STLCache
 #-----------------------------------------------------------------------
 
-# Needed for lib_cmaker_fontconfig() to build FontConfig with Dirent.
-set(LIBCMAKER_DIRENT_SRC_DIR
-  "${EXTERNAL_SRC_DIR}/LibCMaker_Dirent")
-# To use our FindDirent.cmake
-list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_DIRENT_SRC_DIR}/cmake")
+set(LIBCMAKER_STLCACHE_SRC_DIR
+  "${CMAKE_CURRENT_LIST_DIR}/LibCMaker_STLCache"
+)
+# To use our FindSTLCache.cmake.
+list(APPEND CMAKE_MODULE_PATH "${LIBCMAKER_STLCACHE_SRC_DIR}/cmake")
 
-set(DIRENT_lib_VERSION "1.23.1")
+set(STLCACHE_lib_VERSION    "0.2.20180405")
+set(STLCACHE_DOWNLOAD_DIR   "${EXTERNAL_DOWNLOAD_DIR}")
+set(STLCACHE_UNPACKED_DIR   "${EXTERNAL_UNPACKED_DIR}")
+set(STLCACHE_BUILD_DIR      "${EXTERNAL_BIN_DIR}/build_stlcache")
 
-set(DIRENT_DOWNLOAD_DIR "${EXTERNAL_DOWNLOAD_DIR}")
-set(DIRENT_UNPACKED_SRC_DIR "${EXTERNAL_UNPACKED_SRC_DIR}")
-set(DIRENT_BUILD_DIR "${EXTERNAL_BIN_DIR}/build_dirent")
-
-set(COPY_DIRENT_CMAKE_BUILD_SCRIPTS ON)
+set(COPY_STLCACHE_CMAKE_BUILD_SCRIPTS ON)
 
 # Library specific vars and options.
-set(DIRENT_DIR "${EXTERNAL_INSTALL_DIR}")
-set(ENV{DIRENT_DIR} "${DIRENT_DIR}")
 
 
 #-----------------------------------------------------------------------
-# Build and install the Dirent.
+# Build and install the STLCache
 #-----------------------------------------------------------------------
 
 # Try to find already installed lib.
-find_package(Dirent QUIET)
+find_package(STLCache QUIET)
 
-if(NOT DIRENT_FOUND)
-  cmr_print_message(
-    "Dirent is not installed, build and install it.")
+if(NOT STLCACHE_FOUND)
+  cmr_print_status(
+    "STLCache is not installed, build and install it.")
 
-  include(${EXTERNAL_SRC_DIR}/LibCMaker_Dirent/lib_cmaker_dirent.cmake)
-  lib_cmaker_dirent(
-    VERSION ${DIRENT_lib_VERSION}
-    DOWNLOAD_DIR ${DIRENT_DOWNLOAD_DIR}
-    UNPACKED_SRC_DIR ${DIRENT_UNPACKED_SRC_DIR}
-    BUILD_DIR ${DIRENT_BUILD_DIR}
+  include(${LIBCMAKER_STLCACHE_SRC_DIR}/lib_cmaker_stlcache.cmake)
+  lib_cmaker_stlcache(
+    VERSION       ${STLCACHE_lib_VERSION}
+    DOWNLOAD_DIR  ${STLCACHE_DOWNLOAD_DIR}
+    UNPACKED_DIR  ${STLCACHE_UNPACKED_DIR}
+    BUILD_DIR     ${STLCACHE_BUILD_DIR}
   )
   
-  find_package(Dirent REQUIRED)
+  find_package(STLCache REQUIRED)
   
 else()
-  cmr_print_message(
-    "Dirent is installed, skip building and installing it.")
+  cmr_print_status(
+    "STLCache is installed, skip building and installing it.")
 endif()
